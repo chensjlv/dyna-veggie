@@ -44,3 +44,16 @@
              else:
                  sleep(0.1)
          return item['result']
+
+class DynamoDBBackend(KeyValueStoreBackend):
+ 
+     supports_native_join = True
+     implements_incr = True
+     supports_autoexpire = False
+ 
+     def __init__(self, url=None, *args, **kwargs):
+         super(DynamoDBBackend, self).__init__(*args, **kwargs)
+         self.url = url
+ 
+     def get(self, key):
+         return self.client.get(key)
