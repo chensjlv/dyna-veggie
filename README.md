@@ -2,10 +2,10 @@
 Dyna-Veggie is the first fully compatible **DynamoDB result backend for Celery**. It supports both supports both DynamoDB in AWS and DynamoDB Local. Dyna-Veggie also supports these features out of the box:
 
 * Fully suports **Native join operation** in Celery just like the Redis backend, which bring the best performance for canvas operations like chord and group. 
-* Use batch get for retrieving large amount of items which provides much better performance than sequential gets.
-* Automatically create the table if not presented
-* Allow customizable options for DynamoDB throttling retry and exponential backoff
-* Handle DynamoDB's consistency issue appropriately
+* Uses batch get for retrieving large amount of items which provides much better performance than sequential gets.
+* Automatically creates the table if not presented
+* Allows customizable options for DynamoDB throttling retry and exponential backoff
+* Handles DynamoDB's consistency issue appropriately
 
 # Installation
 
