@@ -75,3 +75,7 @@ Whether to retry is the throttling exception is raised. Exponential backoff is u
 ### consistency_wait_time
 
 Seconds to wait for data to become consistent before the backend thinks the data is not available. Why do we need this? Because of network latency and [read consistency](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html). Why can't we just set ConsistentRead to True? Because the get request has the potential to reach to DynamoDB faster than a set request reaches it, if the set and get requests are issued on different machines/processes. Thus the only way to ensure we can get item in a distributed setting is to retry. Default to 1, because typically 1 second is enough for the data to present.
+
+# License
+
+Apache License, Version 2.0
