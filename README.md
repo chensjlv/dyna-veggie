@@ -21,30 +21,28 @@ $ pip install -U dyna-veggie
 To use Dyna-Veggie in your celery project is simple. All you need to do is:
 
 1. Install dyna-veggie through pip
-2. Add the following to your celery config file:
+2. Add the following to your celery config file, and **Enjoy!**:
 
-  ```python
-  # celeryconfig.py maybe?
-  
-  from dyna_veggie import DynamoDBBackend
+```python
+# celeryconfig.py maybe?
 
-  result_backend = DynamoDBBackend
-  # instead of using backend url to config backend, 
-  # we use a dictionary named dynamodb_backend_settings
-  dynamodb_backend_settings = {
-      "access_key": "your aws account's access key",
-      "secret_key": "your aws account's secret key",
-      "region": "us-east-1",  # AWS region your DynamoDB table's in
-      "table": "celery",  # Optional. DynamoDB table for storing results. Default to celery
-      "port": 8000,  # Optional unless you use DynamoDBLocal
-      "read_throughput": 5,  # Optional. Default to 5
-      "write_throughput": 5,  # Optional. Default to 5
-      "retry_if_throttled": True,  # Optional. Default to True
-      "consistency_wait_time": 1,  # Optional. Seconds to wait for data consistency
-  }
-  ```
-  
-3. Enjoy
+from dyna_veggie import DynamoDBBackend
+
+result_backend = DynamoDBBackend
+# instead of using backend url to config backend, 
+# we use a dictionary named dynamodb_backend_settings
+dynamodb_backend_settings = {
+    "access_key": "your aws account's access key",
+    "secret_key": "your aws account's secret key",
+    "region": "us-east-1",  # AWS region your DynamoDB table's in
+    "table": "celery",  # Optional. DynamoDB table for storing results. Default to celery
+    "port": 8000,  # Optional unless you use DynamoDBLocal
+    "read_throughput": 5,  # Optional. Default to 5
+    "write_throughput": 5,  # Optional. Default to 5
+    "retry_if_throttled": True,  # Optional. Default to True
+    "consistency_wait_time": 1,  # Optional. Seconds to wait for data consistency
+}
+```
 
 ## Settings
 
