@@ -48,4 +48,4 @@ class DynamoDBBackend(KeyValueStoreBackend):
     def client(self):
         scheme, region, port, access_key, secret_key, table, query = \
             _parse_url(url)
-        return DynamoDBClient(access_key, secret_key, region, table)
+        return DynamoDBClient(access_key, secret_key, region, port, table, query)
