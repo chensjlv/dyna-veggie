@@ -42,7 +42,7 @@ is:
 
     from celery.app.backends import BACKEND_ALIASES
 
-    BACKEND_ALIASES['dynamodb'] = 'ncdca.dynamodb.DynamoDBBackend'
+    BACKEND_ALIASES['dynamodb'] = 'dyna_veggie.DynamoDBBackend'
     # access_key - your aws account's access key, encoded
     # secret_key - your aws account's secret key, encoded
     # region - AWS region your DynamoDB table's in
