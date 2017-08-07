@@ -20,23 +20,19 @@ def retry_if_throttled(exception):
         return False
 
 
-def dynamodb_retry():
-    """
-    Wait 2^x * 1000 milliseconds between each retry, up to 10 seconds, then 10 seconds afterwards
-    Retry 5 times if an ProvisionedThroughputExceededException occurs, raise any other errors wrapped in RetryError
-    """
-    return retry(
-        retry_on_exception=retry_if_throttled,
-        wait_exponential_multiplier=1000,
-        wait_exponential_max=10000,
-        stop_max_attempt_number=5
-    )
+# Wait 2^x * 100 milliseconds between each retry, up to 0.5 seconds, then 0.5 seconds afterwards
+# Retry if an ProvisionedThroughputExceededException occurs, raise any other errors wrapped in RetryError
+_setting = {
+    'retry_on_exception': retry_if_throttled,
+    'wait_exponential_multiplier': 100,
+    'wait_exponential_max': 500,
+}
 
 
 class DynamoDBClient(object):
     """docstring for DynamoDBClient"""
 
-    def __init__(self, access_key, secret_key, region_name, table_name):
+    def __init__(self, access_key, secret_key, region_name, port, table_name, query):
         super(DynamoDBClient, self).__init__()
         session = boto3.Session(
             aws_access_key_id=access_key,
@@ -49,27 +45,27 @@ class DynamoDBClient(object):
         self.dynamodb = dynamodb
         self.consistency_wait_time = 1  # seconds
 
-    @dynamodb_retry()
+    @retry(**_setting)
     def _get_item(self, **kwargs):
         response = self.table.get_item(**kwargs)
         return response
 
-    @dynamodb_retry()
+    @retry(**_setting)
     def __batch_get_item(self, **kwargs):
         response = self.dynamodb.batch_get_item(**kwargs)
         return response
 
-    @dynamodb_retry()
+    @retry(**_setting)
     def _put_item(self, **kwargs):
         response = self.table.put_item(**kwargs)
         return response
 
-    @dynamodb_retry()
+    @retry(**_setting)
     def _delete_item(self, **kwargs):
         response = self.table.delete_item(**kwargs)
         return response
 
-    @dynamodb_retry()
+    @retry(**_setting)
     def _update_item(self, **kwargs):
         response = self.table.update_item(**kwargs)
         return response
@@ -100,36 +96,34 @@ class DynamoDBClient(object):
             item = response.get('Item')
             if item:
                 not_presented = False
+                return item['result']
             else:
                 # sleep for a while if the item does not present in dynamodb
                 sleep(gap)
                 wait_time += gap
-        return item['result']
 
     def _batch_get_item(self, keys):
-        result = []
+        result = {}
         remaining_keys = [{'id': key} for key in keys]
-        still_has_unprocessed = True
-
+        
         # dynamodb does not promise to get all items at once if it exceeds the
         # api limit, read until there are no unprocessed keys left in response
-        while still_has_unprocessed:
+        while True:
             response = self.__batch_get_item(
                 RequestItems={
                     self.table_name: {
                         'Keys': remaining_keys,
-                        'ConsistentRead': False,
+                        'ConsistentRead': True,
                     }
                 }
             )
-            batch_result = [r['result']
-                            for r in response['Responses'][self.table_name]]
-            result.extend(batch_result)
+            for r in response['Responses'][self.table_name]:
+                result[r['id']] = r['result']
             if response.get('UnprocessedKeys'):
                 remaining_keys = response['UnprocessedKeys'][
                     self.table_name]['Keys']
             else:
-                still_has_unprocessed = False
+                break
         return result
 
     def _partition_chunks(self, items, size):
