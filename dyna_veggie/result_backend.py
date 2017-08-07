@@ -46,6 +46,6 @@ class DynamoDBBackend(KeyValueStoreBackend):
 
     @cached_property
     def client(self):
-        _, region_name, _, access_key, secret_key, table_name, _ = \
+        scheme, region, port, access_key, secret_key, table, query = \
             _parse_url(url)
-        return DynamoDBClient(access_key, secret_key, region_name, table_name)
+        return DynamoDBClient(access_key, secret_key, region, table)
