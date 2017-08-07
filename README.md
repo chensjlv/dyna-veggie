@@ -38,7 +38,7 @@ BACKEND_ALIASES['dynamodb'] = 'dyna_veggie.DynamoDBBackend'
 # write_throughput - Optional. Default to 5
 # retry_if_throttled - Optional. Default to True
 # consistency_wait_time - Optional. Seconds to wait for data consistency. Default to 1
-result_backend = 'dynamodb://encoded_aws_access_key_id:encoded_aws_secret_access_key@region:port/table'
+result_backend = 'dynamodb://encoded_aws_access_key_id:encoded_aws_secret_access_key@region:port/table?read_throughput=n&write_throughput=m'
 ```
 
 ## Settings
