@@ -26,22 +26,19 @@ To use Dyna-Veggie in your celery project is simple. All you need to do is:
 ```python
 # celeryconfig.py maybe?
 
-from dyna_veggie import DynamoDBBackend
+from celery.app.backends import BACKEND_ALIASES
 
-result_backend = DynamoDBBackend
-# instead of using backend url to config backend, 
-# we use a dictionary named dynamodb_backend_settings
-dynamodb_backend_settings = {
-    "access_key": "your aws account's access key",
-    "secret_key": "your aws account's secret key",
-    "region": "us-east-1",  # AWS region your DynamoDB table's in
-    "table": "celery",  # Optional. DynamoDB table for storing results. Default to celery
-    "port": 8000,  # Optional unless you use DynamoDBLocal
-    "read_throughput": 5,  # Optional. Default to 5
-    "write_throughput": 5,  # Optional. Default to 5
-    "retry_if_throttled": True,  # Optional. Default to True
-    "consistency_wait_time": 1,  # Optional. Seconds to wait for data consistency
-}
+BACKEND_ALIASES['dynamodb'] = 'dyna_veggie.DynamoDBBackend'
+# access_key - your aws account's access key, encoded
+# secret_key - your aws account's secret key, encoded
+# region - AWS region your DynamoDB table's in
+# table - Optional. DynamoDB table for storing results. Default to celery
+# port - Optional unless you use DynamoDBLocal
+# read_throughput - Optional. Default to 5
+# write_throughput - Optional. Default to 5
+# retry_if_throttled - Optional. Default to True
+# consistency_wait_time - Optional. Seconds to wait for data consistency. Default to 1
+result_backend = 'dynamodb://encoded_aws_access_key_id:encoded_aws_secret_access_key@region:port/table'
 ```
 
 ## Settings
