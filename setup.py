@@ -8,7 +8,7 @@ setup(
         'boto3>=1.4.4',
         'celery>=4.0.0'
     ],
-    version='0.3.6',
+    version='0.3.7',
     description='Fully compatible DynamoDB result backend for Celery',
     long_description=open('README').read(),
     author='Mike Chen',

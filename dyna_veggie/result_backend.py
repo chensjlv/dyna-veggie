@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 from kombu.utils.objects import cached_property
 from kombu.utils.url import _parse_url
 
-from .dynamodb_client import DynamoDBClient
+from dyna_veggie.dynamodb_client import DynamoDBClient
 from celery.backends.base import KeyValueStoreBackend
 
 __all__ = ['DynamoDBBackend']
@@ -30,7 +30,7 @@ class DynamoDBBackend(KeyValueStoreBackend):
         return self.client.mget(keys)
 
     def set(self, key, value):
-        return self.client.set(key, value)
+        self.client.set(key, value)
 
     def delete(self, key):
         return self.client.delete(key)
@@ -47,5 +47,5 @@ class DynamoDBBackend(KeyValueStoreBackend):
     @cached_property
     def client(self):
         scheme, region, port, access_key, secret_key, table, query = \
-            _parse_url(url)
+            _parse_url(self.url)
         return DynamoDBClient(access_key, secret_key, region, port, table, query)

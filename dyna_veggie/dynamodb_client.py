@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import, unicode_literals
+
 import decimal
 from time import sleep
 
@@ -132,11 +136,11 @@ class DynamoDBClient(object):
             yield items[x:x + size]
 
     def mget(self, keys):
-        result = []
+        result = {}
         # dynamodb supports batch size of 100 in maximum
         chunks = self._partition_chunks(keys, 100)
         for chunk in chunks:
-            result.extend(self._batch_get_item(chunk))
+            result.update(self._batch_get_item(chunk))
         return result
 
     def set(self, key, value):
